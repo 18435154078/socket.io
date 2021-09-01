@@ -11,7 +11,13 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    // 链接io
     var socket = io('http://localhost:8000')
 
+    // 发送消息
+    socket.on('news', function (data) {
+        console.log(data)
+    });
+    socket.emit('哈哈', { my: 'data' })
 </script>
 </html>
