@@ -5,19 +5,550 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/emoji-lib/lib/css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="/emoji-lib/dist/css/jquery.emoji.css">
+    <style>
+        html, body {
+            background: #eee;
+            width: 100%;
+            height:100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+        }
+        .login {
+            width: 250px;
+            height: 330px;
+            background: #fff;
+            margin: 10vw auto 0;
+            padding: 15px 25px;
+            
+        }
+        h1 {
+            font-weight: 500;
+            text-align: center;
+            margin:0;
+        }
+        input {
+            width: 95%;
+            height: 20px;
+            padding-left: 5px;
+            border: 1px solid #eee;
+        }
+        input:focus {
+            border: 1px solid #eee;
+        }
+        input:active {
+            border: 1px solid #eee;
+        }
+        input:focus-visible {
+            border: 1px solid #eee !important;
+        }
+        .login img {
+            width: 17%;
+            margin: 5px 0;
+            border: 2px solid transparent;
+            box-sizing: border-box;
+            padding: 2px;
+        }
+        .active {
+            border: 2px solid green !important;
+        }
+        .content {
+            width: 100%;
+            height: 100vh;
+            display: none;
+        }
+        .content-left {
+            width: 30%;
+            max-width: 250px;
+            min-width: 200px;
+            height: 100%;
+            background: #333;
+            color: #fff;
+        }
+        .content-right {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .user-avata {
+            display: inline;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .user-info, .list-item {
+            display: flex;
+            align-items: center;
+            width: 90%;
+            margin: 0 auto;
+            padding-top:10px;
+            padding-bottom: 10px;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        .member-list {
+            overflow: hidden;
+        }
+        .member-list .title {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            width: 90%;
+            padding-left: 5%;
+        }
+        .list {
+            width:260px;
+            height: calc(100vh - 103px);
+            overflow: auto;
+        }
+        .title-top {
+            width: 96%;
+            height: 50px;
+            line-height: 50px;
+            margin: 0 auto;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+        }
+        .chat-area-wrap {
+            height: calc(100vh - 232px);
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: calc(100vw - 215px);
+        }
+        .chat-area {
+            overflow-y: auto;
+            height: calc(100vh - 232px);
+            width: calc(100vw - 215px);
+        }
+        .edit-area {
+            width: 100%;
+            height: 180px;
+            border-top: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #eee;
+        }
+        .send {
+            position: absolute;
+            right: 10px;
+            bottom: 8px;
+            font-size: 12px;
+        }
+        .send-btn {
+            width: 50px;
+            height: 25px;
+            text-align: center;
+            background: #fff;
+            color: #666;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .edit {
+            margin-top: 10px;
+            margin-left: 15px;
+        }
+        .edit img {
+            width: 20px;
+            height: 20px;
+            margin-right: 3px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        .textarea {
+            overflow: hidden;
+            height: 120px;
+        }
+        #textarea {
+            background: #eee;
+            border: none;
+            outline: none;
+            width:100%;
+            height:100%;
+            padding: 10px;
+            font-size: 15px;
+        }
+        .add-or-leave {
+            width: 100%;
+            font-size: 13px;
+            color: #666;
+            text-align:center;
+            height:30px;
+            line-height:30px;
+        }
+        .other-message {
+            display:flex;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-right: 10%;
+        }
+        .other-message .avatar {
+            width: 35px;
+            height:35px;
+            border-radius: 3px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .other-message .msg {
+            margin-top: -5px;
+        }
+        .other-message .msg .nickname {
+            font-size:12px
+        }
+        .other-message .msg .message {
+            background: #fff;
+            padding: 8px 10px;
+            position: relative;
+        }
+        .other-message .msg .message::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border: 5px solid #fff;
+            position: absolute;
+            left: -5px;
+            top: 14px;
+            transform: rotate(45deg);
+        }
+        .my-message {
+            display: flex;
+            flex-direction: row-reverse;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 10%;
+        }
+        .my-message .avatar {
+            width: 35px;
+            height:35px;
+            border-radius: 3px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .my-message .msg {
+            max-width: 650px;
+            
+        }
+        .my-message .msg .message {
+            background: #9EEA6A;
+            padding: 8px 10px;
+            position: relative;
+        }
+        .my-message .msg .message::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border: 5px solid #9EEA6A;
+            position: absolute;
+            right: -5px;
+            top: 14px;
+            transform: rotate(45deg);
+        }
+        .emoji_icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
 </head>
 <body>
-    hello world ！！！
+    <div class="login">
+        <div>
+            <h1>用户登录</h1>
+            <div>
+                用户名
+                <br/>
+                <input class="username" type="text" placeholder="请输入用户名" />
+            </div>
+            <div>
+                房间名称
+                <br/>
+                <input class="roomname" type="text" placeholder="请输入房间名" />
+            </div>
+            <div style="margin-top: 10px;">
+                选择头像
+                <div style="display: flex;flex-wrap: wrap;justify-content: space-around;">
+                    <img src="/images/avatar1.jpg" alt="">
+                    <img src="/images/avatar2.jpg" alt="">
+                    <img src="/images/avatar3.jpg" alt="">
+                    <img src="/images/avatar4.jpg" alt="">
+                    <img src="/images/avatar5.jpg" alt="">
+                    <img src="/images/avatar6.jpg" alt="">
+                    <img src="/images/avatar7.jpg" alt="">
+                    <img src="/images/avatar8.jpg" alt="">
+                    <img src="/images/avatar9.jpg" alt="">
+                    <img src="/images/avatar10.jpg" alt="">
+                </div>
+            </div>
+            <button class="login-btn" style="width: 100%;height: 30px;color: #fff;background-color: green;border: 0;border-radius: 3px;margin-top:20px;">登录</button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="content-left">
+            <div class="user-info">
+                <img src="/images/avatar1.jpg" alt="" class="user-avatar">
+                <span class="user-nickname">昵称</span>
+            </div>
+            <div class="member-list">
+                <div class="title">用户列表</div>
+                <div class="list">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="content-right">
+            <div class="title-top"><span class="roomname">聊天室</span>(<span class="count">0</span>)</div>
+            <div class="chat-area-wrap">
+                <div class="chat-area">
+                    
+                </div>
+            </div>
+            <div class="edit-area">
+                <div class="edit">
+                    <img src="/images/biaoqing.png" alt="" class="face">
+                    <img src="/images/jietu.png" alt="">
+                    <img src="/images/wenjianjia.png" alt="" class="upload-image">
+                    <input type="file" hidden class="file-input">
+                </div>
+                <div class="textarea">
+                    <div name="" id="textarea" contenteditable="true"></div>
+                </div>
+                <div class="send">
+                    按下Ctrl+Enter发送
+                    <button class="send-btn">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/emoji-lib/lib/script/jquery.mCustomScrollbar.min.js"></script>
+<script src="/emoji-lib/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+<script src="/emoji-lib/dist/js/jquery.emoji.min.js"></script>
+<script>
+$('.login img').click(function() {
+    $(this).addClass('active').siblings().removeClass('active')
+})
+// $('.login').hide()
+// $('.content').css('display', 'flex')
+</script>
 <script>
     // 链接io
     var socket = io('http://localhost:8000')
 
-    // 发送消息
-    socket.on('news', function (data) {
+    var username = null
+    var roomname = null
+    var avatar = null
+
+    $('.login-btn').click(function() {
+        username = $('.username').val()
+        roomname = $('.roomname').val()
+        avatar = $('.active').attr('src')
+        if(!username) {
+            alert('请输入用户名')
+            return
+        }
+        if(!roomname) {
+            alert('请输入房间名')
+            return
+        }
+        if(!avatar) {
+            alert('请选择头像')
+            return
+        }
+        socket.emit('login', { username, roomname, avatar })
+    })
+
+    // 登录失败
+    socket.on('loginErr', data => {
         console.log(data)
-    });
-    socket.emit('哈哈', { my: 'data' })
+    })
+
+    // 登录成功
+    socket.on('loginSuccess', data => {
+        $('.login').fadeOut(200, function() {
+            $('.content').fadeIn(200)
+            $('.content').css('display', 'flex')
+            $('.user-info .user-avatar').attr('src', data.avatar)
+            $('.user-info .user-nickname').text(data.username)
+            $('.roomname').text(data.roomname)
+        })
+    })
+
+    //用户加入聊天室的消息
+    socket.on('addUser', data => {
+        $('.chat-area').append(`
+            <div class="add-or-leave">${data.username}加入群聊</div>
+        `)
+    }) 
+
+    // 获取用户列表
+    socket.on('userAll', data => {
+        $('.count').text(data.length)
+        renderList(data)
+    })
+
+    // 离开聊天室消息
+    socket.on('leaveroom', data => {
+        $('.chat-area').append(`
+            <div class="add-or-leave">${data.username}离开群聊</div>
+        `)
+    })
+
+    // 按下Ctrl+Enter发送
+    $('#textarea').on('keydown', function(e) {
+        if(e.ctrlKey  && e.keyCode == 13) {
+            if($('#textarea').html() == '') {
+                return alert('请输入消息')
+            }
+            // 用户聊天
+            socket.emit('chatMsg', {
+                msg: $('#textarea').html(),
+                username,
+                avatar
+            })
+            $('#textarea').html('')
+        }
+    })
+
+    $('.send-btn').click(function() {
+        if($('#textarea').html() == '') {
+            return alert('请输入消息')
+        }
+        // 用户聊天
+        socket.emit('chatMsg', {
+            msg: $('#textarea').html(),
+            username,
+            avatar
+        })
+        $('#textarea').html('')
+    })
+
+    // 接收服务端广播到的聊天信息
+    socket.on('backChatMsg', data => {
+        if(data.username == username) {
+            $('.chat-area').append(`
+                <div class="my-message">
+                    <img class="avatar" src="${data.avatar}" alt="">
+                    <div class="msg">
+                        <div class="message">${data.msg}</div>
+                    </div>
+                </div>
+            `)
+        } else {
+            $('.chat-area').append(`
+                <div class="other-message">
+                    <img class="avatar" src="${data.avatar}">
+                    <div class="msg">
+                        <span class="nickname">${data.username}</span>
+                        <div class="message">${data.msg}</div>
+                    </div>
+                </div>
+            `)
+        }
+        scrolltop()
+    })
+
+    // 接受服务器广播到的图片消息
+    socket.on('backImgMsg', data => {
+        if(data.username == username) {
+            $('.chat-area').append(`
+                <div class="my-message" style="width:90%;">
+                    <img class="avatar" src="${data.avatar}">
+                    <div class="msg">
+                        <div class="message-img">
+                            <img src="${data.blob}" alt="" style="width:100px;">
+                        </div>
+                    </div>
+                </div>
+            `)
+        } else {
+            $('.chat-area').append(`
+                <div class="other-message" style="width:90%;">
+                    <img class="avatar" src="${data.avatar}">
+                    <div class="msg">
+                        <span class="nickname">${data.username}</span>
+                        <div class="message-img">
+                            <img src="${data.blob}" alt="" style="width:100px;">
+                        </div>
+                    </div>
+                </div>
+            `)
+        }
+        $('.message-img img:last').on('load', function() {
+            scrolltop()
+        })
+    })
+
+    // 点击选择表情
+    $('.face').click(function() {
+        $('.emoji_container').remove();
+        $("#textarea").emoji({
+            button: ".face",
+            showTab: true,
+            animation: 'slide',
+            position: 'topRight',
+            icons: [
+                {
+                    name: "QQ表情",
+                    path: "/emoji-lib/dist/img/qq/",
+                    maxNum: 91,
+                    file: ".gif",
+                    placeholder: "#qq_{alias}#",
+                },
+                {
+                    name: '魔法表情',
+                    path: "/emoji-lib/dist/img/tieba/",
+                    file: ".jpg",
+                    maxNum: 50,
+                },
+                {
+                    name: 'emoji表情',
+                    path: "/emoji-lib/dist/img/emoji/",
+                    file: ".png",
+                    maxNum: 84,
+                }
+            ]
+        });
+    })
+
+    // 点击选择图片
+    $('.upload-image').click(function() {
+        $('.file-input')[0].click()
+    })
+    $('.file-input').on('change', function() {
+        let blob = window.URL.createObjectURL($(this)[0].files[0])
+        
+        // 发送图片消息
+        socket.emit('sendImgMsg', {
+            username,
+            avatar,
+            blob
+        })
+        console.log(blob)
+    })
+
+    // 渲染用户列表
+    function renderList(list) {
+        var ret = ''
+        list.forEach(item => {
+            ret += `
+                <div class="list-item">
+                    <img src="${item.avatar}" alt="" class="user-avatar">
+                    <span class="user-nickname">${item.username}</span>
+                </div>
+            `
+        })
+        $('.list').html(ret)
+    }
+
+    // 设置滚动
+    function scrolltop() {
+        console.log($('.chat-area')[0])
+        $('.chat-area')[0].scrollTop = $('.chat-area')[0].scrollHeight
+    }
 </script>
 </html>
